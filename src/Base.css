@@ -1,0 +1,42 @@
+.base {
+    border: 1px solid blue;
+    display: flex;
+    padding: 1rem;
+}
+
+.card {
+    border: 1px solid blue;
+    padding: 1rem;
+
+}
+
+.cardName {
+    font-weight: bold;
+}
+
+.rollContainer {
+    margin: 3rem auto;
+    width: 20rem;
+    display: flex;
+    flex-direction: column;
+}
+
+.die {
+    margin: 1rem auto;
+}
+
+.dice {
+    margin: 1rem auto;
+}
+
+.split {
+    display: flex;
+}
+
+.cardAttack {
+    border: 1px solid red;
+}
+
+.cardDefense {
+    border: 1px solid red;
+}

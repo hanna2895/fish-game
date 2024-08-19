@@ -97,8 +97,10 @@ const Base = ({ player, turn, endTurn, table, setTable }) => {
           tridents + card2.attackAction.tridents + card1.attackAction.tridents
         )
     } else {
-      card1.attackAction.shells && setShells(shells + card1.attackAction.shells)
-      card1.attackAction.corals && setCorals(corals + card1.attackAction.corals)
+      card1.attackAction.shells &&
+        setShells(shells + card1.attackAction.shells)
+      card1.attackAction.corals &&
+        setCorals(corals + card1.attackAction.corals)
       card1.attackAction.tridents &&
         setTridents(tridents + card1.attackAction.tridents)
     }
@@ -107,33 +109,40 @@ const Base = ({ player, turn, endTurn, table, setTable }) => {
     setRoll2(0)
 
     setShowAvailableMoves(true)
-  }
+  };
 
   const roll = () => {
     setRoll1(Math.floor(Math.random() * 6) + 1)
     setRoll2(Math.floor(Math.random() * 6) + 1)
-  }
+  };
 
   const buyCard = (level) => {
     if (level === 1) {
       // get a random card from level 1
       const card = Level1[Math.floor(Math.random() * Level1.length)]
 
+      //update on buyCard function to update properly and prevent errors
       // check if you have enough shells to buy the card
       if (card.price <= shells) {
-        const newDeck = [...deck]
-        // find the card in your deck at that level and set the attack to false
-        const existingCard = newDeck.find((c) => card.boardSlot === c.boardSlot)
-        if (existingCard) {
-          existingCard.attack = false
-        }
-        setShells(0 + corals)
-        newDeck.push(card)
-        setDeck(newDeck)
-      } else {
-        table.push(card)
-      }
+        setDeck((prevDeck) => {
+          // create a new deck without the purchased card
+          let newDeck = prevDeck.filter((c) => c.name !== card.name)
 
+          // find the card in your deck at that level and set the attack to false
+          const existingCard = newDeck.find(
+            (c) => card.boardSlot === c.boardSlot
+          )
+          if (existingCard) {
+            existingCard.attack = false
+          }
+          setShells(0 + corals)
+          card.attack = true
+          newDeck.push(card)
+          return newDeck
+        })
+      } else {
+        setTable((prevTable) => [...prevTable, card])
+      }
       card.attack = true
       deck.push(card)
     }

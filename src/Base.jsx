@@ -2,11 +2,21 @@ import { startingDeck } from "./startingDeck"
 import { useState } from "react"
 import "./Base.css"
 import { Level1 } from "./level1"
+import { RollDice } from "./components/RollDice"
+import { BuyCard } from "./components/BuyCard"
+import { CardSlot } from "./components/CardSlot"
+import { DefensePile } from "./components/DefensePile"
+import { DefenseCardSlot } from "./components/DefenseCardSlot"
 
 const Base = ({ player, turn, endTurn, table, setTable }) => {
   const [shells, setShells] = useState(0)
   const [corals, setCorals] = useState(0)
   const [tridents, setTridents] = useState(0)
+
+  const [defenseStack, setDefenseStack] = useState([])
+  const [totalShellsDefense, setTotalShellsDefense] = useState(0)
+  const [totalCoralsDefense, setTotalCoralsDefense] = useState(0)
+  const [totalTridentsDefense, setTotalTridentsDefense] = useState(0)
 
   const [roll1, setRoll1] = useState(0)
   const [roll2, setRoll2] = useState(0)
@@ -16,45 +26,6 @@ const Base = ({ player, turn, endTurn, table, setTable }) => {
   // your deck
   const [deck, setDeck] = useState([...startingDeck])
 
-  const renderCard = (slot) => {
-    const cards = deck.filter((card) => card.boardSlot === slot)
-
-    const active = cards.find((card) => card.attack)
-    const defense = cards.filter((card) => !card.attack)
-
-    return (
-      <div className="cardSlot" id={`card${slot}`}>
-        {active && (
-          <div className="card">
-            <div className="cardName">{active.name}</div>
-            {active.attackAction.shells && (
-              <div>shell {active.attackAction.shells}</div>
-            )}
-            {active.attackAction.corals && (
-              <div>corals {active.attackAction.corals}</div>
-            )}
-            {active.attackAction.tridents && (
-              <div>tridents {active.attackAction.tridents}</div>
-            )}
-          </div>
-        )}
-        {defense.map((card) => (
-          <div className="card cardDefense" key={card.name}>
-            <div className="cardName">{card.name}</div>
-            {card.defenseAction.shells && (
-              <div>shell {card.defenseAction.shells}</div>
-            )}
-            {card.defenseAction.corals && (
-              <div>corals {card.defenseAction.corals}</div>
-            )}
-            {card.defenseAction.tridents && (
-              <div>tridents {card.defenseAction.tridents}</div>
-            )}
-          </div>
-        ))}
-      </div>
-    )
-  }
 
   const renderCardForAttack = (slot) => {
     const cards = deck.filter((card) => card.boardSlot === slot)
@@ -74,8 +45,8 @@ const Base = ({ player, turn, endTurn, table, setTable }) => {
               <div>tridents {active.attackAction.tridents}</div>
             )}
           </div>
-        )}
-      </div>
+    )}
+    </div>
     )
   }
 
@@ -116,98 +87,97 @@ const Base = ({ player, turn, endTurn, table, setTable }) => {
     setRoll2(Math.floor(Math.random() * 6) + 1)
   };
 
-  const buyCard = (level) => {
-    if (level === 1) {
-      // get a random card from level 1
-      const card = Level1[Math.floor(Math.random() * Level1.length)]
+  //Create a defense Stack of cards
 
-      //update on buyCard function to update properly and prevent errors
-      // check if you have enough shells to buy the card
+  const addToDefenseStack = (card) => {
+    setDefenseStack((prevStack) => {
+      const newStack = [...prevStack, card]
+      updateDefenseStackTotal(newStack)
+      return newStack
+    })
+  }
+
+  const updateDefenseStackTotal = (newStack) => {
+    const totalShells = newStack.reduce((total, card) => total + (card.defenseAction.shells || 0), 0)
+    const totalCorals = newStack.reduce((total, card) => total + (card.defenseAction.corals || 0), 0)
+    const totalTridents = newStack.reduce((total, card) => total + (card.defenseAction.tridents || 0), 0)
+
+    setTotalShellsDefense(totalShells)
+    setTotalCoralsDefense(totalCorals)
+    setTotalTridentsDefense(totalTridents)
+  }
+
+
+  const buyCard = (level) => {
+
+    if (level === 1) {
+      // Get a random card from level 1
+      const card = Level1[Math.floor(Math.random() * Level1.length)]
+            // Check if you have enough shells to buy the card
       if (card.price <= shells) {
         setDeck((prevDeck) => {
-          // create a new deck without the purchased card
-          let newDeck = prevDeck.filter((c) => c.name !== card.name)
+          // going through the deck, adding the card on the current board slot to the defense pile
+          let newDeck = prevDeck.filter(c => {
+            if (c.boardSlot === card.boardSlot) {
+              // Move the replaced card to the defense stack
+              addToDefenseStack({ ...c, attack: false }); 
+              return false
+            }
+            return true;
+          });
 
-          // find the card in your deck at that level and set the attack to false
-          const existingCard = newDeck.find(
-            (c) => card.boardSlot === c.boardSlot
-          )
-          if (existingCard) {
-            existingCard.attack = false
-          }
-          setShells(0 + corals)
+          newDeck = newDeck.filter(c => c.name !== card.name)
+  
           card.attack = true
           newDeck.push(card)
+          setShells(0 + corals)
           return newDeck
         })
       } else {
         setTable((prevTable) => [...prevTable, card])
       }
-      card.attack = true
-      deck.push(card)
     }
   }
 
   return (
     <div>
-      <h1>{player}'s Base </h1>
-      <div className="shells">Shells: {shells}</div>
-      <div className="coral">Corals: {corals}</div>
-      <div className="tridents">Tridents: {tridents}</div>
+      <div className="playersStats">
+      <div className="player">
+        <h1>{player}'s Base </h1>
+        <div className="shells">Shells: {shells}</div>
+        <div className="coral">Corals: {corals}</div>
+        <div className="tridents">Tridents: {tridents}</div>
+      </div>
 
+      <div className="defense">
+        <DefensePile
+          totalShellsDefense={totalShellsDefense}
+          totalCoralsDefense={totalCoralsDefense}
+          totalTridentsDefense={totalTridentsDefense}
+          />
+      </div>
+
+      </div>
       {turn ? (
         <>
           {showAvailableMoves ? (
-            <div>
-              {shells > 2 && (
-                <button onClick={() => buyCard(1)}>Buy Level 1</button>
-              )}
-              {shells > 7 && <button>Buy Level 2</button>}
-              {shells > 12 && <button>Buy Level 3</button>}
-              <button
-                onClick={() => {
-                  endTurn()
-                  setShowAvailableMoves(false)
-                }}
-              >
-                End your turn
-              </button>
-            </div>
-          ) : (
-            <div className="rollContainer">
-              {!(roll1 && roll2) ? (
-                <button onClick={() => roll()}>Roll</button>
-              ) : (
-                <>
-                  <div className="splitContainer">
-                    <div className="split">
-                      <div className="die">{roll1}</div>
-                      <div className="die">{roll2}</div>
-                    </div>
-                    <div className="splitRewards">
-                      {renderCardForAttack(roll1)}
-                      {renderCardForAttack(roll2)}
-                    </div>
-                    <button
-                      onClick={() => {
-                        attack(roll1, roll2)
-                      }}
-                    >
-                      Split
-                    </button>
-                  </div>
-                  {/* stuff you get */}
+            <div className="buyingContainer">
 
-                  <div className="totalContainer">
-                    <div className="dice">{roll1 + roll2}</div>
-                    <div className="totalRewards">
-                      {renderCardForAttack(roll1 + roll2)}
-                    </div>
-                    <button onClick={() => attack(roll1 + roll2)}>Total</button>
-                  </div>
-                </>
-              )}
-            </div>
+            <BuyCard 
+              shells={shells}
+              buyCard={buyCard}
+              setShowAvailableMoves={setShowAvailableMoves}
+              endTurn={endTurn}
+              />
+          </div>
+          ) : (
+            <RollDice
+              roll1={roll1}
+              roll2={roll2}
+              roll={roll}
+              attack={attack}
+              renderCardForAttack={renderCardForAttack}
+            />
           )}
         </>
       ) : (
@@ -216,8 +186,13 @@ const Base = ({ player, turn, endTurn, table, setTable }) => {
 
       <div className="base">
         {Array.from({ length: 12 }, (_, i) => i + 1).map((slot) =>
-          renderCard(slot)
+          <CardSlot key={slot} slot={slot} cards={deck.filter((card) => card.boardSlot === slot)} />
         )}
+      </div>
+      <div className="base">
+        {Array.from({ length: 12 }, (_, i) => i + 1).map((slot) => (
+          <DefenseCardSlot key={slot} slot={slot} cards={defenseStack.filter((card) => card.boardSlot === slot)} />
+        ))}
       </div>
     </div>
   )

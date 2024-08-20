@@ -10,6 +10,26 @@
 
 }
 
+.playersStats {
+    display: flex;
+    justify-content: space-between;
+    padding: 1rem;
+}
+
+.player {
+    border: 1px solid red;
+    padding: 1rem;
+}
+
+.defense {
+    border: 1px solid green;
+    padding: 1rem;
+}
+
+.buyingContainer {
+    padding: 1rem;
+}
+
 .cardName {
     font-weight: bold;
 }
@@ -38,5 +58,6 @@
 }
 
 .cardDefense {
-    border: 1px solid red;
+    border: 1px solid purple;
+    padding: 1rem;
 }

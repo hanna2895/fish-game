@@ -7,8 +7,22 @@ export const Level1 = [
     defenseAction: { shells: 1 },
   },
   {
-    name: "Gold Fish",
+    name: "fish2",
     boardSlot: 2,
+    price: 2,
+    attackAction: { shells: 1 },
+    defenseAction: { shells: 1 },
+  },
+  {
+    name: "fish3",
+    boardSlot: 2,
+    price: 2,
+    attackAction: { shells: 1 },
+    defenseAction: { shells: 1 },
+  },
+  {
+    name: "Gold Fish",
+    boardSlot: 3,
     price: 2,
     attackAction: { shells: 1 },
     defenseAction: { shells: 1 },

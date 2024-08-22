@@ -107,6 +107,11 @@ const Base = ({ player, turn, endTurn, table, setTable }) => {
     setTotalTridentsDefense(totalTridents)
   }
 
+  const handleEndTurn = () => {
+    setShells(corals);
+    endTurn();
+  };
+
 
   const buyCard = (level) => {
 
@@ -130,7 +135,7 @@ const Base = ({ player, turn, endTurn, table, setTable }) => {
   
           card.attack = true
           newDeck.push(card)
-          setShells(0 + corals)
+          setShells(0)
           return newDeck
         })
       } else {
@@ -167,7 +172,7 @@ const Base = ({ player, turn, endTurn, table, setTable }) => {
               shells={shells}
               buyCard={buyCard}
               setShowAvailableMoves={setShowAvailableMoves}
-              endTurn={endTurn}
+              endTurn={handleEndTurn}
               />
           </div>
           ) : (

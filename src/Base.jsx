@@ -2,16 +2,20 @@ import { startingDeck } from "./startingDeck"
 import { useState } from "react"
 import "./Base.css"
 import { Level1 } from "./level1"
+import { Level2 } from "./level2"
+import { Level3 } from "./level3"
 import { RollDice } from "./components/RollDice"
 import { BuyCard } from "./components/BuyCard"
 import { CardSlot } from "./components/CardSlot"
-import { DefensePile } from "./components/DefensePile"
 import { DefenseCardSlot } from "./components/DefenseCardSlot"
 
 const Base = ({ player, turn, endTurn, table, setTable }) => {
   const [shells, setShells] = useState(0)
   const [corals, setCorals] = useState(0)
   const [tridents, setTridents] = useState(0)
+  const [level1Cards, setLevel1Cards] = useState([...Level1])
+  const [level2Cards, setLevel2Cards] = useState([...Level2])
+  const [level3Cards, setLevel3Cards] = useState([...Level3])
 
   const [defenseStack, setDefenseStack] = useState([])
   const [totalShellsDefense, setTotalShellsDefense] = useState(0)
@@ -108,40 +112,60 @@ const Base = ({ player, turn, endTurn, table, setTable }) => {
   }
 
   const handleEndTurn = () => {
-    setShells(corals);
+    if (shells < corals){
+      setShells(corals);
+    }
     endTurn();
   };
+
+  const handleBuyCard = (card) => {
+    if (card.price <= shells) {
+      setDeck((prevDeck) => {
+        // going through the deck, adding the card on the current board slot to the defense pile
+        let newDeck = prevDeck.filter(c => {
+          if (c.boardSlot === card.boardSlot) {
+            // Move the replaced card to the defense stack
+            addToDefenseStack({ ...c, attack: false }); 
+            return false
+          }
+          return true;
+        });
+
+        newDeck = newDeck.filter(c => c.name !== card.name)
+
+        card.attack = true
+        newDeck.push(card)
+        setShells(0)
+        return newDeck
+      })
+    } else {
+      setTable((prevTable) => [...prevTable, card])
+    }
+  }
+
 
 
   const buyCard = (level) => {
 
-    if (level === 1) {
-      // Get a random card from level 1
-      const card = Level1[Math.floor(Math.random() * Level1.length)]
-            // Check if you have enough shells to buy the card
-      if (card.price <= shells) {
-        setDeck((prevDeck) => {
-          // going through the deck, adding the card on the current board slot to the defense pile
-          let newDeck = prevDeck.filter(c => {
-            if (c.boardSlot === card.boardSlot) {
-              // Move the replaced card to the defense stack
-              addToDefenseStack({ ...c, attack: false }); 
-              return false
-            }
-            return true;
-          });
+    let card;
 
-          newDeck = newDeck.filter(c => c.name !== card.name)
-  
-          card.attack = true
-          newDeck.push(card)
-          setShells(0)
-          return newDeck
-        })
-      } else {
-        setTable((prevTable) => [...prevTable, card])
-      }
+    switch(level){
+      case 1:
+        card = level1Cards[Math.floor(Math.random() * level1Cards.length)];
+        setLevel1Cards(level1Cards.filter(c => c.name !== card.name));
+      break
+      case 2:
+        card = level2Cards[Math.floor(Math.random() * level2Cards.length)];
+        setLevel2Cards(level2Cards.filter(c => c.name !== card.name));
+      break
+      case 3:
+        card = level3Cards[Math.floor(Math.random() * level3Cards.length)];
+        setLevel3Cards(level3Cards.filter(c => c.name !== card.name));
+      break
+      default:
+        return
     }
+    handleBuyCard(card)
   }
 
   return (
@@ -154,13 +178,6 @@ const Base = ({ player, turn, endTurn, table, setTable }) => {
         <div className="tridents">Tridents: {tridents}</div>
       </div>
 
-      <div className="defense">
-        <DefensePile
-          totalShellsDefense={totalShellsDefense}
-          totalCoralsDefense={totalCoralsDefense}
-          totalTridentsDefense={totalTridentsDefense}
-          />
-      </div>
 
       </div>
       {turn ? (

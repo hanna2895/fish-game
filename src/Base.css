@@ -1,83 +1,79 @@
 .base {
-    border: 1px solid blue;
-    display: flex;
-    padding: 1rem;
+  border: 1px solid blue;
+  display: flex;
+  padding: 1rem;
 }
 
 .card {
-    border: 1px solid blue;
-    height: 60px;
-    padding: 1rem;
-    width: 60px;
+  border: 1px solid blue;
+  height: 60px;
+  padding: 1rem;
+  width: 60px;
 }
 
-
 .emptyBox {
-    border: 1px solid red;
-    height: 60px;
-    padding: 1rem;
-    width: 60px;
+  border: 1px solid red;
+  height: 60px;
+  padding: 1rem;
+  width: 60px;
 }
 
 .playersStats {
-    display: flex;
-    justify-content: space-between;
-    padding: 1rem;
+  display: flex;
+  justify-content: space-between;
+  padding: 1rem;
 }
 
 .player {
-    border: 1px solid red;
-    padding: 1rem;
+  border: 1px solid red;
+  padding: 1rem;
 }
 
 .defense {
-    border: 1px solid green;
-    padding: 1rem;
+  border: 1px solid green;
+  padding: 1rem;
 }
 
 .buyingContainer {
-    padding: 1rem;
+  padding: 1rem;
 }
 
 .cardName {
-    font-weight: bold;
+  font-weight: bold;
 }
 
 .rollContainer {
-    margin: 3rem auto;
-    width: 20rem;
-    display: flex;
-    flex-direction: column;
+  margin: 3rem auto;
+  width: 20rem;
+  display: flex;
+  flex-direction: column;
 }
 
 .die {
-    margin: 1rem auto;
+  margin: 1rem auto;
 }
 
 .dice {
-    margin: 1rem auto;
+  margin: 1rem auto;
 }
 
 .split {
-    display: flex;
+  display: flex;
 }
 
 .cardAttack {
-    border: 1px solid red;
+  border: 1px solid red;
 }
 
 .cardDefense {
-    border: 1px solid purple;
-    padding: 1rem;
+  border: 1px solid purple;
+  padding: 1rem;
 }
-
-
-
 
 /* *********************** CenterTable CSS ******************************** */
 
 .tableContainer {
-    display: flex;
-    height: auto;
-    padding: 1rem;
+  display: flex;
+  height: auto;
+  padding: 1rem;
 }

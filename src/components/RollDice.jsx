@@ -4,6 +4,7 @@ export const RollDice = ({
   roll,
   attack,
   renderCardForAttack,
+  pearls,
 }) => {
   return (
     <div className="rollContainer">
@@ -11,10 +12,23 @@ export const RollDice = ({
         <button onClick={() => roll()}>Roll</button>
       ) : (
         <>
+          {pearls && <div className="rerolling">
+            <button onClick={() => roll()}>ReRoll Both</button>
+          </div>}
           <div className="splitContainer">
             <div className="split">
-              <div className="die">{roll1}</div>
-              <div className="die">{roll2}</div>
+              <div className="die">
+                {pearls && <div className="rerolling">
+                  <button>ReRoll</button>
+                </div>}
+                {roll1}
+              </div>
+              <div className="die">
+                {pearls && <div className="rerolling">
+                  <button>ReRoll</button>
+                </div>}
+                {roll2}
+              </div>
             </div>
             <div className="splitRewards">
               {renderCardForAttack(roll1)}

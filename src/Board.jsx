@@ -1,5 +1,5 @@
 import Base from "./Base"
-import Table  from "./components/Table"
+import Table from "./components/Table"
 import { useState } from "react"
 
 const Board = () => {
@@ -29,6 +29,6 @@ const Board = () => {
         }}
       />
     </div>
-  );
-};
-export default Board;
+  )
+}
+export default Board

@@ -1,7 +1,6 @@
-import React from 'react';
+import React from "react"
 
 const Table = ({ table }) => {
- 
   return (
     <div className="tableContainer">
       {table.map((card, index) => {
@@ -14,7 +13,7 @@ const Table = ({ table }) => {
         )
       })}
     </div>
-  );
-};
+  )
+}
 
-export default Table;
+export default Table

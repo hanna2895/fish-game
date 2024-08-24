@@ -7,7 +7,7 @@ import { Level3 } from "./level3"
 import { RollDice } from "./components/RollDice"
 import { BuyCard } from "./components/BuyCard"
 import { CardSlot } from "./components/CardSlot"
-import { Table } from './components/Table'
+import { Table } from "./components/Table"
 import { DefenseCardSlot } from "./components/DefenseCardSlot"
 
 const Base = ({ player, turn, endTurn, table, setTable }) => {
@@ -72,10 +72,8 @@ const Base = ({ player, turn, endTurn, table, setTable }) => {
           tridents + card2.attackAction.tridents + card1.attackAction.tridents
         )
     } else {
-      card1.attackAction.shells &&
-        setShells(shells + card1.attackAction.shells)
-      card1.attackAction.corals &&
-        setCorals(corals + card1.attackAction.corals)
+      card1.attackAction.shells && setShells(shells + card1.attackAction.shells)
+      card1.attackAction.corals && setCorals(corals + card1.attackAction.corals)
       card1.attackAction.tridents &&
         setTridents(tridents + card1.attackAction.tridents)
     }
@@ -98,13 +96,22 @@ const Base = ({ player, turn, endTurn, table, setTable }) => {
       const newStack = [...prevStack, card]
       updateDefenseStackTotal(newStack)
       return newStack
-    });
-  };
+    })
+  }
 
   const updateDefenseStackTotal = (newStack) => {
-    const totalShells = newStack.reduce((total, card) => total + (card.defenseAction.shells || 0), 0)
-    const totalCorals = newStack.reduce((total, card) => total + (card.defenseAction.corals || 0), 0)
-    const totalTridents = newStack.reduce((total, card) => total + (card.defenseAction.tridents || 0), 0)
+    const totalShells = newStack.reduce(
+      (total, card) => total + (card.defenseAction.shells || 0),
+      0
+    )
+    const totalCorals = newStack.reduce(
+      (total, card) => total + (card.defenseAction.corals || 0),
+      0
+    )
+    const totalTridents = newStack.reduce(
+      (total, card) => total + (card.defenseAction.tridents || 0),
+      0
+    )
 
     setTotalShellsDefense(totalShells)
     setTotalCoralsDefense(totalCorals)
@@ -112,8 +119,8 @@ const Base = ({ player, turn, endTurn, table, setTable }) => {
   }
 
   const handleEndTurn = () => {
-    if (shells < corals){
-      setShells(corals);
+    if (shells < corals) {
+      setShells(corals)
     }
     endTurn()
   }
@@ -129,7 +136,7 @@ const Base = ({ player, turn, endTurn, table, setTable }) => {
             return false
           }
           return true
-        });
+        })
 
         newDeck = newDeck.filter((c) => c.name !== card.name)
 
@@ -144,7 +151,7 @@ const Base = ({ player, turn, endTurn, table, setTable }) => {
   }
 
   const buyCard = (level) => {
-    let card;
+    let card
 
     switch (level) {
       case 1:
@@ -211,7 +218,7 @@ const Base = ({ player, turn, endTurn, table, setTable }) => {
       </div>
       <div className="base">
         {Array.from({ length: 12 }, (_, i) => i + 1).map((slot) => {
-          const cards = defenseStack.filter((card) => card.boardSlot === slot);
+          const cards = defenseStack.filter((card) => card.boardSlot === slot)
           return (
             <div key={slot}>
               {cards.length > 0 ? (
@@ -220,7 +227,7 @@ const Base = ({ player, turn, endTurn, table, setTable }) => {
                 <div className="emptyBox"></div>
               )}
             </div>
-          );
+          )
         })}
       </div>
     </div>

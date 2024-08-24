@@ -7,13 +7,13 @@ import { Level3 } from "./level3"
 import { RollDice } from "./components/RollDice"
 import { BuyCard } from "./components/BuyCard"
 import { CardSlot } from "./components/CardSlot"
-import { Table } from "./components/Table"
 import { DefenseCardSlot } from "./components/DefenseCardSlot"
 
 const Base = ({ player, turn, endTurn, table, setTable }) => {
   const [shells, setShells] = useState(0)
   const [corals, setCorals] = useState(0)
   const [tridents, setTridents] = useState(0)
+  const [pearls, setPearls] = useState(0)
   const [level1Cards, setLevel1Cards] = useState([...Level1])
   const [level2Cards, setLevel2Cards] = useState([...Level2])
   const [level3Cards, setLevel3Cards] = useState([...Level3])
@@ -22,6 +22,7 @@ const Base = ({ player, turn, endTurn, table, setTable }) => {
   const [totalShellsDefense, setTotalShellsDefense] = useState(0)
   const [totalCoralsDefense, setTotalCoralsDefense] = useState(0)
   const [totalTridentsDefense, setTotalTridentsDefense] = useState(0)
+  const [totalPearlsDefense, setTotalPearlsDefense] = useState(0)
 
   const [roll1, setRoll1] = useState(0)
   const [roll2, setRoll2] = useState(0)
@@ -48,6 +49,9 @@ const Base = ({ player, turn, endTurn, table, setTable }) => {
             {active.attackAction.tridents && (
               <div>tridents {active.attackAction.tridents}</div>
             )}
+            {active.attackAction.pearls && (
+              <div>Pearls {active.attackAction.pearls}</div>
+            )}
           </div>
         )}
       </div>
@@ -61,21 +65,27 @@ const Base = ({ player, turn, endTurn, table, setTable }) => {
     if (card2) {
       card2.attackAction.shells &&
         setShells(
-          shells + card2.attackAction.shells + card1.attackAction.shells
+          shells + card2.attackAction.shells + (card1.attackAction.shells || 0)
         )
       card2.attackAction.corals &&
         setCorals(
-          corals + card2.attackAction.corals + card1.attackAction.corals
+          corals + card2.attackAction.corals + (card1.attackAction.corals || 0)
         )
       card2.attackAction.tridents &&
         setTridents(
-          tridents + card2.attackAction.tridents + card1.attackAction.tridents
+          tridents + card2.attackAction.tridents + (card1.attackAction.tridents || 0)
+        )
+      card2.attackAction.pearls &&
+        setPearls(
+          pearls + card2.attackAction.pearls + (card1.attackAction.pearls || 0)
         )
     } else {
       card1.attackAction.shells && setShells(shells + card1.attackAction.shells)
       card1.attackAction.corals && setCorals(corals + card1.attackAction.corals)
       card1.attackAction.tridents &&
         setTridents(tridents + card1.attackAction.tridents)
+      card1.attackAction.pearls &&
+        setPearls(pearls + card1.attackAction.pearls)
     }
 
     setRoll1(0)
@@ -112,10 +122,15 @@ const Base = ({ player, turn, endTurn, table, setTable }) => {
       (total, card) => total + (card.defenseAction.tridents || 0),
       0
     )
+    const totalPearls = newStack.reduce(
+      (total, card) => total + (card.defenseAction.pearls || 0),
+      0
+    )
 
     setTotalShellsDefense(totalShells)
     setTotalCoralsDefense(totalCorals)
     setTotalTridentsDefense(totalTridents)
+    setTotalPearlsDefense(totalPearls)
   }
 
   const handleEndTurn = () => {
@@ -124,6 +139,10 @@ const Base = ({ player, turn, endTurn, table, setTable }) => {
     }
     endTurn()
   }
+
+  // const reroll = () => {
+  //   {pearls && }
+  // }
 
   const handleBuyCard = (card) => {
     if (card.price <= shells) {
@@ -180,6 +199,7 @@ const Base = ({ player, turn, endTurn, table, setTable }) => {
           <div className="shells">Shells: {shells}</div>
           <div className="coral">Corals: {corals}</div>
           <div className="tridents">Tridents: {tridents}</div>
+          <div className="pearls">Pearls: {pearls}</div>
         </div>
       </div>
       {turn ? (

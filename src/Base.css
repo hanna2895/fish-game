@@ -6,8 +6,17 @@
 
 .card {
     border: 1px solid blue;
+    height: 60px;
     padding: 1rem;
+    width: 60px;
+}
 
+
+.emptyBox {
+    border: 1px solid red;
+    height: 60px;
+    padding: 1rem;
+    width: 60px;
 }
 
 .playersStats {
@@ -59,5 +68,16 @@
 
 .cardDefense {
     border: 1px solid purple;
+    padding: 1rem;
+}
+
+
+
+
+/* *********************** CenterTable CSS ******************************** */
+
+.tableContainer {
+    display: flex;
+    height: auto;
     padding: 1rem;
 }

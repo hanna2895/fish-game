@@ -7,6 +7,7 @@ import { Level3 } from "./level3"
 import { RollDice } from "./components/RollDice"
 import { BuyCard } from "./components/BuyCard"
 import { CardSlot } from "./components/CardSlot"
+import { Table } from './components/Table'
 import { DefenseCardSlot } from "./components/DefenseCardSlot"
 
 const Base = ({ player, turn, endTurn, table, setTable }) => {
@@ -30,7 +31,6 @@ const Base = ({ player, turn, endTurn, table, setTable }) => {
   // your deck
   const [deck, setDeck] = useState([...startingDeck])
 
-
   const renderCardForAttack = (slot) => {
     const cards = deck.filter((card) => card.boardSlot === slot)
     const active = cards.find((card) => card.attack)
@@ -49,8 +49,8 @@ const Base = ({ player, turn, endTurn, table, setTable }) => {
               <div>tridents {active.attackAction.tridents}</div>
             )}
           </div>
-    )}
-    </div>
+        )}
+      </div>
     )
   }
 
@@ -84,12 +84,12 @@ const Base = ({ player, turn, endTurn, table, setTable }) => {
     setRoll2(0)
 
     setShowAvailableMoves(true)
-  };
+  }
 
   const roll = () => {
     setRoll1(Math.floor(Math.random() * 6) + 1)
     setRoll2(Math.floor(Math.random() * 6) + 1)
-  };
+  }
 
   //Create a defense Stack of cards
 
@@ -98,8 +98,8 @@ const Base = ({ player, turn, endTurn, table, setTable }) => {
       const newStack = [...prevStack, card]
       updateDefenseStackTotal(newStack)
       return newStack
-    })
-  }
+    });
+  };
 
   const updateDefenseStackTotal = (newStack) => {
     const totalShells = newStack.reduce((total, card) => total + (card.defenseAction.shells || 0), 0)
@@ -115,23 +115,23 @@ const Base = ({ player, turn, endTurn, table, setTable }) => {
     if (shells < corals){
       setShells(corals);
     }
-    endTurn();
-  };
+    endTurn()
+  }
 
   const handleBuyCard = (card) => {
     if (card.price <= shells) {
       setDeck((prevDeck) => {
         // going through the deck, adding the card on the current board slot to the defense pile
-        let newDeck = prevDeck.filter(c => {
+        let newDeck = prevDeck.filter((c) => {
           if (c.boardSlot === card.boardSlot) {
             // Move the replaced card to the defense stack
-            addToDefenseStack({ ...c, attack: false }); 
+            addToDefenseStack({ ...c, attack: false })
             return false
           }
-          return true;
+          return true
         });
 
-        newDeck = newDeck.filter(c => c.name !== card.name)
+        newDeck = newDeck.filter((c) => c.name !== card.name)
 
         card.attack = true
         newDeck.push(card)
@@ -143,25 +143,22 @@ const Base = ({ player, turn, endTurn, table, setTable }) => {
     }
   }
 
-
-
   const buyCard = (level) => {
-
     let card;
 
-    switch(level){
+    switch (level) {
       case 1:
-        card = level1Cards[Math.floor(Math.random() * level1Cards.length)];
-        setLevel1Cards(level1Cards.filter(c => c.name !== card.name));
-      break
+        card = level1Cards[Math.floor(Math.random() * level1Cards.length)]
+        setLevel1Cards(level1Cards.filter((c) => c.name !== card.name))
+        break
       case 2:
-        card = level2Cards[Math.floor(Math.random() * level2Cards.length)];
-        setLevel2Cards(level2Cards.filter(c => c.name !== card.name));
-      break
+        card = level2Cards[Math.floor(Math.random() * level2Cards.length)]
+        setLevel2Cards(level2Cards.filter((c) => c.name !== card.name))
+        break
       case 3:
-        card = level3Cards[Math.floor(Math.random() * level3Cards.length)];
-        setLevel3Cards(level3Cards.filter(c => c.name !== card.name));
-      break
+        card = level3Cards[Math.floor(Math.random() * level3Cards.length)]
+        setLevel3Cards(level3Cards.filter((c) => c.name !== card.name))
+        break
       default:
         return
     }
@@ -171,27 +168,24 @@ const Base = ({ player, turn, endTurn, table, setTable }) => {
   return (
     <div>
       <div className="playersStats">
-      <div className="player">
-        <h1>{player}'s Base </h1>
-        <div className="shells">Shells: {shells}</div>
-        <div className="coral">Corals: {corals}</div>
-        <div className="tridents">Tridents: {tridents}</div>
-      </div>
-
-
+        <div className="player">
+          <h1>{player}'s Base </h1>
+          <div className="shells">Shells: {shells}</div>
+          <div className="coral">Corals: {corals}</div>
+          <div className="tridents">Tridents: {tridents}</div>
+        </div>
       </div>
       {turn ? (
         <>
           {showAvailableMoves ? (
             <div className="buyingContainer">
-
-            <BuyCard 
-              shells={shells}
-              buyCard={buyCard}
-              setShowAvailableMoves={setShowAvailableMoves}
-              endTurn={handleEndTurn}
+              <BuyCard
+                shells={shells}
+                buyCard={buyCard}
+                setShowAvailableMoves={setShowAvailableMoves}
+                endTurn={handleEndTurn}
               />
-          </div>
+            </div>
           ) : (
             <RollDice
               roll1={roll1}
@@ -207,14 +201,27 @@ const Base = ({ player, turn, endTurn, table, setTable }) => {
       )}
 
       <div className="base">
-        {Array.from({ length: 12 }, (_, i) => i + 1).map((slot) =>
-          <CardSlot key={slot} slot={slot} cards={deck.filter((card) => card.boardSlot === slot)} />
-        )}
+        {Array.from({ length: 12 }, (_, i) => i + 1).map((slot) => (
+          <CardSlot
+            key={slot}
+            slot={slot}
+            cards={deck.filter((card) => card.boardSlot === slot)}
+          />
+        ))}
       </div>
       <div className="base">
-        {Array.from({ length: 12 }, (_, i) => i + 1).map((slot) => (
-          <DefenseCardSlot key={slot} slot={slot} cards={defenseStack.filter((card) => card.boardSlot === slot)} />
-        ))}
+        {Array.from({ length: 12 }, (_, i) => i + 1).map((slot) => {
+          const cards = defenseStack.filter((card) => card.boardSlot === slot);
+          return (
+            <div key={slot}>
+              {cards.length > 0 ? (
+                <DefenseCardSlot slot={slot} cards={cards} />
+              ) : (
+                <div className="emptyBox"></div>
+              )}
+            </div>
+          );
+        })}
       </div>
     </div>
   )

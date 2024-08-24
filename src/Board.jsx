@@ -1,4 +1,5 @@
 import Base from "./Base"
+import Table  from "./components/Table"
 import { useState } from "react"
 
 const Board = () => {
@@ -17,6 +18,7 @@ const Board = () => {
           setTurn(2)
         }}
       />
+      <Table table={table} />
       <Base
         player="Player 2"
         turn={turn === 2}
@@ -27,6 +29,6 @@ const Board = () => {
         }}
       />
     </div>
-  )
-}
-export default Board
+  );
+};
+export default Board;

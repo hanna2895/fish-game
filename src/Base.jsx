@@ -133,12 +133,73 @@ const Base = ({ player, turn, endTurn, table, setTable }) => {
     setTotalPearlsDefense(totalPearls)
   }
 
+  const renderCardForDefense = (slot) => {
+    const cards = defenseStack.filter((card) => card.boardSlot === slot);
+    const totalShells = cards.reduce(
+      (total, card) => total + (card.defenseAction.shells || 0),
+      0
+    );
+    const totalCorals = cards.reduce(
+      (total, card) => total + (card.defenseAction.corals || 0),
+      0
+    );
+    const totalTridents = cards.reduce(
+      (total, card) => total + (card.defenseAction.tridents || 0),
+      0
+    );
+    const totalPearls = cards.reduce(
+      (total, card) => total + (card.defenseAction.pearls || 0),
+      0
+    );
+  
+    return (
+      <div className="cardDefense">
+        {totalShells > 0 && <div>Shells: {totalShells}</div>}
+        {totalCorals > 0 && <div>Corals: {totalCorals}</div>}
+        {totalTridents > 0 && <div>Tridents: {totalTridents}</div>}
+        {totalPearls > 0 && <div>Pearls: {totalPearls}</div>}
+      </div>
+    );
+  };
+
   const handleEndTurn = () => {
     if (shells < corals) {
       setShells(corals)
     }
     endTurn()
   }
+
+  // Inside the Base component, before the return statement:
+
+const handleDefenseRewards = (choice) => {
+  // Assuming we want to add the defense rewards to a player's resources
+  const totalShells = defenseStack.reduce(
+    (total, card) =>
+      card.boardSlot === choice ? total + (card.defenseAction.shells || 0) : total,
+    0
+  );
+  const totalCorals = defenseStack.reduce(
+    (total, card) =>
+      card.boardSlot === choice ? total + (card.defenseAction.corals || 0) : total,
+    0
+  );
+  const totalTridents = defenseStack.reduce(
+    (total, card) =>
+      card.boardSlot === choice ? total + (card.defenseAction.tridents || 0) : total,
+    0
+  );
+  const totalPearls = defenseStack.reduce(
+    (total, card) =>
+      card.boardSlot === choice ? total + (card.defenseAction.pearls || 0) : total,
+    0
+  );
+
+  // Update state with new defense rewards
+  setShells((prevShells) => prevShells + totalShells);
+  setCorals((prevCorals) => prevCorals + totalCorals);
+  setTridents((prevTridents) => prevTridents + totalTridents);
+  setPearls((prevPearls) => prevPearls + totalPearls);
+};
 
   // const reroll = () => {
   //   {pearls && }
@@ -211,16 +272,23 @@ const Base = ({ player, turn, endTurn, table, setTable }) => {
                 buyCard={buyCard}
                 setShowAvailableMoves={setShowAvailableMoves}
                 endTurn={handleEndTurn}
+                level1cards={level1Cards.length}
+                level2cards={level2Cards.length}
+                level3cards={level3Cards.length}
               />
             </div>
           ) : (
             <RollDice
-              roll1={roll1}
-              roll2={roll2}
-              roll={roll}
-              attack={attack}
-              renderCardForAttack={renderCardForAttack}
-            />
+            roll1={roll1}
+            roll2={roll2}
+            roll={roll}
+            attack={attack}
+            renderCardForAttack={renderCardForAttack}
+            renderCardForDefense={renderCardForDefense}
+            turn={turn}
+            pearls={pearls}
+            handleDefenseRewards={handleDefenseRewards} 
+          />
           )}
         </>
       ) : (

@@ -63,29 +63,23 @@ const Base = ({ player, turn, endTurn, table, setTable }) => {
     const card2 = deck.find((card) => card.boardSlot === slot2 && card.attack)
 
     if (card2) {
-      card2.attackAction.shells &&
-        setShells(
-          shells + card2.attackAction.shells + (card1.attackAction.shells || 0)
-        )
-      card2.attackAction.corals &&
-        setCorals(
-          corals + card2.attackAction.corals + (card1.attackAction.corals || 0)
-        )
-      card2.attackAction.tridents &&
-        setTridents(
-          tridents + card2.attackAction.tridents + (card1.attackAction.tridents || 0)
-        )
-      card2.attackAction.pearls &&
-        setPearls(
-          pearls + card2.attackAction.pearls + (card1.attackAction.pearls || 0)
-        )
+      if (card2.attackAction.shells || card1.attackAction.shells) {
+        setShells(shells + (card2.attackAction.shells || 0) + (card1.attackAction.shells || 0));
+      }
+      if (card2.attackAction.corals || card1.attackAction.corals) {
+        setCorals(corals + (card2.attackAction.corals || 0) + (card1.attackAction.corals || 0));
+      }
+      if (card2.attackAction.tridents || card1.attackAction.tridents) {
+        setTridents(tridents + (card2.attackAction.tridents || 0) + (card1.attackAction.tridents || 0));
+      }
+      if (card2.attackAction.pearls || card1.attackAction.pearls) {
+        setPearls(pearls + (card2.attackAction.pearls || 0) + (card1.attackAction.pearls || 0));
+      }
     } else {
-      card1.attackAction.shells && setShells(shells + card1.attackAction.shells)
-      card1.attackAction.corals && setCorals(corals + card1.attackAction.corals)
-      card1.attackAction.tridents &&
-        setTridents(tridents + card1.attackAction.tridents)
-      card1.attackAction.pearls &&
-        setPearls(pearls + card1.attackAction.pearls)
+      if (card1.attackAction.shells) setShells(shells + card1.attackAction.shells);
+      if (card1.attackAction.corals) setCorals(corals + card1.attackAction.corals);
+      if (card1.attackAction.tridents) setTridents(tridents + card1.attackAction.tridents);
+      if (card1.attackAction.pearls) setPearls(pearls + card1.attackAction.pearls);
     }
 
     setRoll1(0)
@@ -226,6 +220,7 @@ const handleDefenseRewards = (choice) => {
         return newDeck
       })
     } else {
+      setShells(0)
       setTable((prevTable) => [...prevTable, card])
     }
   }
